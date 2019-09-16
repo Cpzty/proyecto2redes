@@ -8,6 +8,7 @@ def menu():
     print("Ingrese 2 para mandar un mensaje estilizado")
     print("Ingrese 3 para salir")
 
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
     while True:
