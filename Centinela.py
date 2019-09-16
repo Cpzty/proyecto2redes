@@ -14,7 +14,9 @@ from  kivy.uix.floatlayout import FloatLayout
 import kivy.core.text.markup
 import kivy.resources
 from kivy.graphics import Color, Rectangle ,Line
-#Config.set('graphics', 'width', 400)
+from kivy.uix.dropdown import DropDown
+
+Config.set('graphics', 'resizable', 'False')
 
 class Contenedor(BoxLayout):
     None
@@ -80,8 +82,8 @@ class Entrar(Screen):
         pin_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
         #Boton para ingresar al juego
         btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
-        print(pin_input)
-        if(pin_input == 5):
+        print(pin_input.text)
+        if(pin_input.text == "hola"):
             btn.bind(on_press = self.changerJuego)
         else:
             btn.bind(on_press = self.changerNoEntrar)
@@ -118,7 +120,7 @@ class Crear(Screen):
         self.manager.current = "Juego"
     
     def generarPin(self, btn):
-        num = "34"
+        num = "34"  # reemplazar por el numero de sala
         my_box = FloatLayout(size=(300, 300))
         my_label = Label(text='[color=ffffff]  El PIN es: [/color]'+num, markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 150))
         my_box.add_widget(my_label)
@@ -145,15 +147,75 @@ class NoEntrar(Screen):
         self.add_widget(my_box1)
 
     def changer(self, btn): #Cambiar de pantalla 
-        self.manager.current = "Entrar"
+        self.manager.current = "Salas"
 
 
 class Juego(Screen):
     def __init__(self,**Kwargs):
         super(Juego, self).__init__(**Kwargs)
         self.orientation = "vertical"
-        S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
+        S = Image(source='imagenes/juego.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
+
+
+        # Variables
+        PIN = "34"
+        Turno = "Cristian"
+        P1 = "Ana"
+        P2 = "Estrella"
+        P3 = "Juan"
+
+        my_box1 = FloatLayout(size=(300, 300))
+        labelTitle = Label(text='[color=000000] CENTINELA [/color]', markup = True, font_size = "70dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 450))
+        labelChat = Label(text='[color=000000] CHAT [/color]', markup = True, font_size = "50dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(500, 450))
+        labelPin = Label(text='[color=165B03] Estas en la sala: '+PIN+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
+        labelTurno = Label(text='[color=165B03] Es turno de: '+Turno+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        SP1 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(30, 370) )
+        SP2 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(150, 370) )
+        SP3 = Image(source='imagenes/cartas.png', size_hint=(0.2, 0.1), pos=(270, 370) )
+        labelP1 = Label(text='[color=165B03] '+P1+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
+        labelP2 = Label(text='[color=165B03] '+P2+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
+        labelP3 = Label(text='[color=165B03] '+P3+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
+
+
+        #Acción de atacar
+        btnAtacar = Button(text= "Atacar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(100,10))
+        btnAtacar.bind(on_press = self.changer)
+        #Acción de sumar
+        btnSumar = Button(text= "Sumar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(200,10))
+        btnSumar.bind(on_press = self.changer)
+        #Acción de Robar
+        btnRobar = Button(text= "Robar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(300,10))
+        btnRobar.bind(on_press = self.changer)
+        puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
+
+
+        #Chat
+        messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
+        #Boton para enviar mensaje
+        btn = Button(text= "Enviar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(720,10))
+        btn.bind(on_press = self.changer)
+        
+        my_box1.add_widget(labelTitle)
+        my_box1.add_widget(labelChat)
+        my_box1.add_widget(messageInput)
+        my_box1.add_widget(labelPin)
+        my_box1.add_widget(labelTurno)
+        my_box1.add_widget(SP1)
+        my_box1.add_widget(SP2)
+        my_box1.add_widget(SP3)
+        my_box1.add_widget(labelP1)
+        my_box1.add_widget(labelP2)
+        my_box1.add_widget(labelP3)
+        my_box1.add_widget(btn)
+        my_box1.add_widget(btnAtacar)
+        my_box1.add_widget(btnRobar)
+        my_box1.add_widget(btnSumar)
+        my_box1.add_widget(puntosImg)
+        self.add_widget(my_box1)
+
+    def changer(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Salas"
 
 
 
