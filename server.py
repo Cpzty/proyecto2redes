@@ -3,6 +3,12 @@ from random import  randint
 HOST = '127.0.0.1'
 PORT = 65432
 
+rooms = []
+puntaje_p1 = 0
+puntaje_p2 = 0
+puntaje_p3 = 0
+puntaje_p4 = 0
+
 def repartir_cartas():
     palo = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
     baraja = palo + palo + palo + palo
@@ -30,7 +36,21 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if not data:
                 break
             #conn.sendall(data)
-            elif(data.decode() == "play"):
-                conn.sendall(b'yo')
-
-
+            #elif("create" in data.decode()):
+            elif (data.decode() == "PIN"):
+                pin = str(randint(1,9)) + str(randint(1,9)) + str(randint(1,9))
+                conn.send(pin.encode())
+            elif ("A" in data.decode()):
+                ataque = data.decode().split()
+                carta = ataque[1]
+                atacado = ataque[2]
+                #restarle puntaje al otro jugador
+                #conn.send()
+            elif("S" in data.decode()):
+                #averiguar que jugador lo envia para sumarse puntaje
+                puntaje_p1 = puntaje_p1 + int(data.decode())
+            elif("R" in data.decode()):
+                robo = data.decode().split()
+                carta = robo[1]
+                robado = robo[2]
+                #enviar al jugador correspondiente determinar exito o fracaso y reenviar al jugador inicial
