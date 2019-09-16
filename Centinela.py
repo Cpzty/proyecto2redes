@@ -73,7 +73,28 @@ class Entrar(Screen):
         S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
 
+        my_box1 = FloatLayout(size=(300, 300))
+        # label del PIN
+        my_label = Label(text='[color=ffffff]  Escriba el PIN: [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 250))
+        #input del PIN
+        pin_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
+        #Boton para ingresar al juego
+        btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
+        print(pin_input)
+        if(pin_input == 5):
+            btn.bind(on_press = self.changerJuego)
+        else:
+            btn.bind(on_press = self.changerNoEntrar)
+        my_box1.add_widget(my_label)
+        my_box1.add_widget(pin_input)
+        my_box1.add_widget(btn)
+        self.add_widget(my_box1)
 
+    def changerJuego(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Juego"
+
+    def changerNoEntrar(self, btn): #Cambiar de pantalla 
+        self.manager.current = "NoEntrar"
 
 class Crear(Screen):
     def __init__(self,**Kwargs):
@@ -82,6 +103,26 @@ class Crear(Screen):
         S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
 
+        my_box1 = FloatLayout(size=(300, 300))
+        # label del PIN
+        btnPin = Button(text= "Generar PIN", font_size=24, size_hint=(0.3, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(250,350))
+        btnPin.bind(on_press= self.generarPin)
+        #Boton para ingresar al juego
+        btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
+        btn.bind(on_press = self.changerJuego)
+        my_box1.add_widget(btn)
+        my_box1.add_widget(btnPin)
+        self.add_widget(my_box1)
+
+    def changerJuego(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Juego"
+    
+    def generarPin(self, btn):
+        num = "34"
+        my_box = FloatLayout(size=(300, 300))
+        my_label = Label(text='[color=ffffff]  El PIN es: [/color]'+num, markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 150))
+        my_box.add_widget(my_label)
+        self.add_widget(my_box)
 
 #Esta pantalla se muestra si:
 #    -El PIN de la sala no existe
@@ -92,6 +133,19 @@ class NoEntrar(Screen):
         self.orientation = "vertical"
         S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
+        
+        my_box1 = FloatLayout(size=(300, 300))
+        # label del PIN
+        my_label = Label(text='[color=ffffff] El PIN de la sala no existe o \n La sala esta llena [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(200, 250))
+        #Boton para ingresar al juego
+        btn = Button(text= "Regresar", font_size=24, size_hint=(0.2, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(150,170))
+        btn.bind(on_press = self.changer)
+        my_box1.add_widget(my_label)
+        my_box1.add_widget(btn)
+        self.add_widget(my_box1)
+
+    def changer(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Entrar"
 
 
 class Juego(Screen):
