@@ -21,6 +21,8 @@ adresses = []
 
 players = ["p1", "p2", "p3", "p4"]
 
+clients = {}
+
 def threaded_server(con, addr):
     while True:
         data = con.recv(1024)
@@ -64,6 +66,9 @@ def threaded_server(con, addr):
                 print(rooms)
             else:
                 con.send(b'room is full')
+        elif("nombre" in data.decode()):
+            nickname = data.decode().split()
+            clients[addr[1]] = nickname[1]
 
 
 
@@ -84,6 +89,7 @@ def Main():
         print('Connected to :', addr[0], ':', addr[1])
         if addr[1] not in adresses:
             adresses.append(addr[1])
+            clients[addr[1]] = ''
 
         # Start a new thread and return its identifier
         t1 = threading.Thread(target=threaded_server(con, addr))
@@ -106,6 +112,8 @@ def repartir_cartas():
 
     return p1_cards, p2_cards, p3_cards, p4_cards
 
+def ready_to_play():
+    print("in progress")
 
 if __name__ == '__main__':
     Main()
