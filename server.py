@@ -21,7 +21,7 @@ adresses = []
 
 players = ["p1", "p2", "p3", "p4"]
 
-def threaded_server(con):
+def threaded_server(con, addr):
     while True:
         data = con.recv(1024)
         if not data:
@@ -57,8 +57,13 @@ def threaded_server(con):
         elif("join" in data.decode()):
             join_room = data.decode().split()
             the_room = join_room[1]
-            #if(rooms["room1"]["count"] < 4):
-                #rooms["room1"][players.pop(players[randint(0, len(players)-1)])] = addr
+            if(rooms["room1"]["count"] < 4):
+                rooms["room1"][players.pop(randint(0, len(players)-1))] = addr[1]
+                con.send(b'joined room successfully')
+                rooms["room1"]["count"] = rooms["room1"]["count"] + 1
+                print(rooms)
+            else:
+                con.send(b'room is full')
 
 
 
@@ -81,7 +86,7 @@ def Main():
             adresses.append(addr[1])
 
         # Start a new thread and return its identifier
-        t1 = threading.Thread(target=threaded_server(con))
+        t1 = threading.Thread(target=threaded_server(con, addr))
         t1.start()
     s.close()
 
