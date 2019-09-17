@@ -22,6 +22,7 @@ Config.set('graphics', 'resizable', 'False')
 player_name = ""
 num = ""
 
+
 class Contenedor(BoxLayout):
     None
 
@@ -176,7 +177,8 @@ class Juego(Screen):
         P1 = "Ana"
         P2 = "Estrella"
         P3 = "Juan"
-        option = ""
+        self.option = ""
+        self.botones = []
 
         self.my_box1 = FloatLayout(size=(300, 300))
         labelTitle = Label(text='[color=000000] CENTINELA [/color]', markup = True, font_size = "70dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 450))
@@ -205,7 +207,7 @@ class Juego(Screen):
         
         puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
 
-         #Chat
+        #Chat
         messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
         #Boton para enviar mensaje
         btn = Button(text= "Enviar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(720,10))
@@ -223,25 +225,73 @@ class Juego(Screen):
         self.my_box1.add_widget(labelP2)
         self.my_box1.add_widget(labelP3)
         self.my_box1.add_widget(btn)
-       # self.my_box1.add_widget(self.btnAtacar)
-       # self.my_box1.add_widget(self.btnRobar)
-       # self.my_box1.add_widget(self.btnSumar)       
+        self.my_box1.add_widget(self.btnAtacar)
+        self.my_box1.add_widget(self.btnRobar)
+        self.my_box1.add_widget(self.btnSumar)       
         self.my_box1.add_widget(puntosImg)
         self.add_widget(self.my_box1)
 
-    def cartas(self, op):
+
+    def jugada(self, btn):
+        for a in self.botones:
+            self.my_box1.remove_widget(a) 
+        self.my_box1.add_widget(self.btnAtacar)
+        self.my_box1.add_widget(self.btnRobar)
+        self.my_box1.add_widget(self.btnSumar) 
+
+    def generarCartas(self):
+        #peticion de mis cartas al server
+        cartas = ["1","2","3","4","5","6","7","8","9","10","11","12","13"]
+        x = 30
+        y = 100
+        cont = 0
+        
+        for a in cartas:
+            self.btnC = Button(text= a, font_size=24, size_hint=(0.05, 0.08), background_color = [0, 1, 0.6, 0.8], pos=(x,y))
+            self.btnC.bind(on_press = self.jugada)
+            self.my_box1.add_widget(self.btnC) 
+            self.botones.append(self.btnC)
+            cont = cont + 1
+            if (cont < 7):    
+                x = x + 50
+            elif(cont == 7):
+                y = 50
+                x = 30
+            else:
+                x = x + 50 
+         
+
+
+    def cartas(self):
+        if (self.option == "AR"):
+            self.my_box1.remove_widget(self.btnCon) 
+            self.my_box1.remove_widget(self.Jugador) 
+            self.my_box1.remove_widget(self.labelJ)       
+
+        self.generarCartas()
+
+    def changerAR(self, btn): #Cambiar de pantalla 
+        self.option = "AR"
         self.my_box1.remove_widget(self.btnAtacar)
         self.my_box1.remove_widget(self.btnRobar)
         self.my_box1.remove_widget(self.btnSumar) 
 
-    def changerAR(self, btn): #Cambiar de pantalla 
-        option = "AR"
-        self.cartas(option)
-        
+        self.labelJ = Label(text='[color=165B03] Jugador: [/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(10, 10))
+        self.my_box1.add_widget(self.labelJ)
+        self.Jugador = TextInput(size_hint=(0.2, 0.1), pos=(40, 10))
+        self.btnCon = Button(text= "continuar", font_size=24, size_hint=(0.17, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(210,15))
+        self.btnCon.bind(on_press = self.change)
+        self.my_box1.add_widget(self.btnCon) 
+        self.my_box1.add_widget(self.Jugador) 
     
+    def change(self, btn):
+        self.cartas()
+
     def changer(self, btn): #Cambiar de pantalla 
-        option = "S"
-        self.cartas(option)
+        self.my_box1.remove_widget(self.btnAtacar)
+        self.my_box1.remove_widget(self.btnRobar)
+        self.my_box1.remove_widget(self.btnSumar) 
+        self.cartas()
 
 
 
