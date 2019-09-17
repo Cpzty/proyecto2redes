@@ -1,3 +1,4 @@
+import socket
 import kivy
 kivy.require('1.9.0')
 from kivy.app import App
@@ -18,6 +19,10 @@ from kivy.uix.dropdown import DropDown
 
 Config.set('graphics', 'resizable', 'False')
 
+player_name = ""
+num = ""
+
+
 class Contenedor(BoxLayout):
     None
 
@@ -33,17 +38,26 @@ class Name(Screen):
         #label nombre
         my_label2 = Label(text='[color=ffffff]  Escriba el nombre de usuario: [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(200, 250))
         #input nombre
-        my_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
+        self.my_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
         #Boton para ingresar al programa
         btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
         btn.bind(on_press = self.changer)
+        btnHelp = Button(font_size=24, size_hint=(0.09, 0.1), pos=(600,500))
+        btnHelp.bind(on_press = self.changerHelp)
+        btnHelp.add_widget(Image(source='imagenes/help.jpg', pos=(600,500), allow_stretch=True))
         my_box1.add_widget(my_label1)
         my_box1.add_widget(my_label2)
-        my_box1.add_widget(my_input)
+        my_box1.add_widget(self.my_input)
         my_box1.add_widget(btn)
+        my_box1.add_widget(btnHelp)
         self.add_widget(my_box1)
 
     def changer(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Salas"
+        player_name = self.my_input.text
+        print(player_name)
+
+    def changerHelp(self, btn): #Cambiar de pantalla 
         self.manager.current = "Salas"
 
 class Salas(Screen):
@@ -79,18 +93,18 @@ class Entrar(Screen):
         # label del PIN
         my_label = Label(text='[color=ffffff]  Escriba el PIN: [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 250))
         #input del PIN
-        pin_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
+        self.pin_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
         #Boton para ingresar al juego
         btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
-        print(pin_input.text)
-        if(pin_input.text == "hola"):
-            btn.bind(on_press = self.changerJuego)
-        else:
-            btn.bind(on_press = self.changerNoEntrar)
+        btn.bind(on_press = self.validar)
         my_box1.add_widget(my_label)
-        my_box1.add_widget(pin_input)
+        my_box1.add_widget(self.pin_input)
         my_box1.add_widget(btn)
         self.add_widget(my_box1)
+
+    def validar(self, btn):
+        # TO DO: obtener los pines del server
+        pass
 
     def changerJuego(self, btn): #Cambiar de pantalla 
         self.manager.current = "Juego"
@@ -120,7 +134,8 @@ class Crear(Screen):
         self.manager.current = "Juego"
     
     def generarPin(self, btn):
-        num = "34"  # reemplazar por el numero de sala
+        s.sendall(b'PIN')
+        num = s.recv(1024).decode() # reemplazar por el numero de sala
         my_box = FloatLayout(size=(300, 300))
         my_label = Label(text='[color=ffffff]  El PIN es: [/color]'+num, markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 150))
         my_box.add_widget(my_label)
@@ -156,39 +171,41 @@ class Juego(Screen):
         self.orientation = "vertical"
         S = Image(source='imagenes/juego.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
-
-
+       
         # Variables
-        PIN = "34"
         Turno = "Cristian"
         P1 = "Ana"
         P2 = "Estrella"
         P3 = "Juan"
+        self.option = ""
+        self.botones = []
 
-        my_box1 = FloatLayout(size=(300, 300))
+        self.my_box1 = FloatLayout(size=(300, 300))
         labelTitle = Label(text='[color=000000] CENTINELA [/color]', markup = True, font_size = "70dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 450))
         labelChat = Label(text='[color=000000] CHAT [/color]', markup = True, font_size = "50dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(500, 450))
-        labelPin = Label(text='[color=165B03] Estas en la sala: '+PIN+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
+        labelPin = Label(text='[color=165B03] Estas en la sala: '+num+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
         labelTurno = Label(text='[color=165B03] Es turno de: '+Turno+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
         SP1 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(30, 370) )
         SP2 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(150, 370) )
-        SP3 = Image(source='imagenes/cartas.png', size_hint=(0.2, 0.1), pos=(270, 370) )
+        SP3 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(270, 370) )
         labelP1 = Label(text='[color=165B03] '+P1+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
         labelP2 = Label(text='[color=165B03] '+P2+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
         labelP3 = Label(text='[color=165B03] '+P3+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
-
+        
+        
 
         #Acción de atacar
-        btnAtacar = Button(text= "Atacar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(100,10))
-        btnAtacar.bind(on_press = self.changer)
+        self.btnAtacar = Button(text= "Atacar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(100,10))
+        self.btnAtacar.bind(on_press = self.changerAR)
         #Acción de sumar
-        btnSumar = Button(text= "Sumar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(200,10))
-        btnSumar.bind(on_press = self.changer)
+        self.btnSumar = Button(text= "Sumar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(200,10))
+        self.btnSumar.bind(on_press = self.changer)
         #Acción de Robar
-        btnRobar = Button(text= "Robar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(300,10))
-        btnRobar.bind(on_press = self.changer)
-        puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
+        self.btnRobar = Button(text= "Robar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(300,10))
+        self.btnRobar.bind(on_press = self.changerAR)
 
+        
+        puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
 
         #Chat
         messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
@@ -196,26 +213,86 @@ class Juego(Screen):
         btn = Button(text= "Enviar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(720,10))
         btn.bind(on_press = self.changer)
         
-        my_box1.add_widget(labelTitle)
-        my_box1.add_widget(labelChat)
-        my_box1.add_widget(messageInput)
-        my_box1.add_widget(labelPin)
-        my_box1.add_widget(labelTurno)
-        my_box1.add_widget(SP1)
-        my_box1.add_widget(SP2)
-        my_box1.add_widget(SP3)
-        my_box1.add_widget(labelP1)
-        my_box1.add_widget(labelP2)
-        my_box1.add_widget(labelP3)
-        my_box1.add_widget(btn)
-        my_box1.add_widget(btnAtacar)
-        my_box1.add_widget(btnRobar)
-        my_box1.add_widget(btnSumar)
-        my_box1.add_widget(puntosImg)
-        self.add_widget(my_box1)
+        self.my_box1.add_widget(labelTitle)
+        self.my_box1.add_widget(labelChat)
+        self.my_box1.add_widget(messageInput)
+        self.my_box1.add_widget(labelPin)
+        self.my_box1.add_widget(labelTurno)
+        self.my_box1.add_widget(SP1)
+        self.my_box1.add_widget(SP2)
+        self.my_box1.add_widget(SP3)
+        self.my_box1.add_widget(labelP1)
+        self.my_box1.add_widget(labelP2)
+        self.my_box1.add_widget(labelP3)
+        self.my_box1.add_widget(btn)
+        self.my_box1.add_widget(self.btnAtacar)
+        self.my_box1.add_widget(self.btnRobar)
+        self.my_box1.add_widget(self.btnSumar)       
+        self.my_box1.add_widget(puntosImg)
+        self.add_widget(self.my_box1)
+
+
+    def jugada(self, btn):
+        for a in self.botones:
+            self.my_box1.remove_widget(a) 
+        self.my_box1.add_widget(self.btnAtacar)
+        self.my_box1.add_widget(self.btnRobar)
+        self.my_box1.add_widget(self.btnSumar) 
+
+    def generarCartas(self):
+        #peticion de mis cartas al server
+        cartas = ["1","2","3","4","5","6","7","8","9","10","11","12","13"]
+        x = 30
+        y = 100
+        cont = 0
+        
+        for a in cartas:
+            self.btnC = Button(text= a, font_size=24, size_hint=(0.05, 0.08), background_color = [0, 1, 0.6, 0.8], pos=(x,y))
+            self.btnC.bind(on_press = self.jugada)
+            self.my_box1.add_widget(self.btnC) 
+            self.botones.append(self.btnC)
+            cont = cont + 1
+            if (cont < 7):    
+                x = x + 50
+            elif(cont == 7):
+                y = 50
+                x = 30
+            else:
+                x = x + 50 
+         
+
+
+    def cartas(self):
+        if (self.option == "AR"):
+            self.my_box1.remove_widget(self.btnCon) 
+            self.my_box1.remove_widget(self.Jugador) 
+            self.my_box1.remove_widget(self.labelJ)       
+
+        self.generarCartas()
+
+    def changerAR(self, btn): #Cambiar de pantalla 
+        self.option = "AR"
+        self.my_box1.remove_widget(self.btnAtacar)
+        self.my_box1.remove_widget(self.btnRobar)
+        self.my_box1.remove_widget(self.btnSumar) 
+
+        self.labelJ = Label(text='[color=165B03] Jugador: [/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(10, 10))
+        self.my_box1.add_widget(self.labelJ)
+        self.Jugador = TextInput(size_hint=(0.2, 0.1), pos=(40, 10))
+        self.btnCon = Button(text= "continuar", font_size=24, size_hint=(0.17, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(210,15))
+        self.btnCon.bind(on_press = self.change)
+        self.my_box1.add_widget(self.btnCon) 
+        self.my_box1.add_widget(self.Jugador) 
+    
+    def change(self, btn):
+        self.cartas()
 
     def changer(self, btn): #Cambiar de pantalla 
-        self.manager.current = "Salas"
+        self.my_box1.remove_widget(self.btnAtacar)
+        self.my_box1.remove_widget(self.btnRobar)
+        self.my_box1.remove_widget(self.btnSumar) 
+        self.cartas()
+
 
 
 
@@ -240,4 +317,8 @@ class CentinelaApp(App):
         return my_screenmanager        
 
 if __name__ == '__main__':
-    CentinelaApp().run()
+    HOST = '127.0.0.1'
+    PORT = 65432
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        CentinelaApp().run()
