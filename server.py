@@ -71,7 +71,12 @@ def threaded_server(con, addr):
             clients[addr[1]] = nickname[1]
 
 
+def threaded_read(con):
+    data = con.recv(1024)
+    return data
 
+#def threaded_write(con,msg):
+    #con.send(msg)
 
 def Main():
     HOST = '127.0.0.1'
@@ -93,8 +98,11 @@ def Main():
 
         # Start a new thread and return its identifier
         t1 = threading.Thread(target=threaded_server(con, addr))
+        t2 = threading.Thread(target= threaded_read(con))
+
         t1.start()
-    s.close()
+        #t2.start()
+    #s.close()
 
 
 def repartir_cartas():
