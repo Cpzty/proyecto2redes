@@ -4,13 +4,22 @@ from _thread import *
 import threading
 
 some_lock = threading.Lock()
-rooms = []
+rooms = {"room1":
+             {"pin": 0,
+         "p1" : '',
+         "p2" : '',
+         "p3" : '',
+         "p4" : '',
+         "count" : 0}
+         }
+
 puntaje_p1 = 0
 puntaje_p2 = 0
 puntaje_p3 = 0
 puntaje_p4 = 0
 adresses = []
 
+players = ["p1", "p2", "p3", "p4"]
 
 def threaded_server(con):
     while True:
@@ -21,7 +30,11 @@ def threaded_server(con):
         # elif("create" in data.decode()):
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
-            con.send(pin.encode())
+            if pin not in rooms["room1"]:
+                con.send(pin.encode())
+                rooms["room1"]["pin"] = pin
+            else:
+                con.send(b'error creating pin')
         elif ("A" in data.decode()):
             ataque = data.decode().split()
             carta = ataque[1]
@@ -41,6 +54,13 @@ def threaded_server(con):
                 adress = adresses[i]
                 adress_response = "address: " + str(adress)
                 con.send(adress_response.encode())
+        elif("join" in data.decode()):
+            join_room = data.decode().split()
+            the_room = join_room[1]
+            #if(rooms["room1"]["count"] < 4):
+                #rooms["room1"][players.pop(players[randint(0, len(players)-1)])] = addr
+
+
 
 
 def Main():
