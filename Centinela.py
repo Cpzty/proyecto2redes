@@ -24,11 +24,19 @@ Config.set('graphics', 'resizable', 'False')
 
 class Variables():
     def __init__(self):
-        self.player_name = ""
-        self.num = ""
-        self.turno = ""
+        self.player_name = "" 
+        self.num = "" # pin de la sala
+        self.primerTurno = "" 
+        self.turno = "" # nombre del jugador que le toca
+        self.Puntos = "0"
+        self.Puntos1 = "0"
+        self.Puntos2 = "0"
+        self.Puntos3 = "0"
+        self.nameTurno = "" #p1, p2, p3, p4
         self.jugadores = []
+        self.orden = []
         self.misCartas = []
+        
 
     def setplayer_name(self, nuevo):
         self.player_name = nuevo
@@ -42,17 +50,70 @@ class Variables():
     def getnum(self):
         return self.num
 
+    def setprimerTurno(self, nuevo):
+        self.primerTurno = nuevo
+    
+    def getprimerTurno(self):
+        return self.primerTurno
+
     def setturno(self, nuevo):
         self.turno = nuevo
     
     def getturno(self):
+        ordjugadores = self.getorden()
+        if(self.getnameTurno == "p1"):
+            self.setturno(ordjugadores[1])
+        elif(self.getnameTurno == "p2"):
+            self.setturno(ordjugadores[2])
+        elif(self.getnameTurno == "p3"):
+            self.setturno(ordjugadores[3])
+        elif(self.getnameTurno == "p4"):
+            self.setturno(ordjugadores[0])
+
         return self.turno
+
+    def setPuntos(self, nuevo):
+        self.Puntos = nuevo
+    
+    def getPuntos(self):
+        return self.Puntos
+    
+    def setPuntos1(self, nuevo):
+        self.Puntos1 = nuevo
+    
+    def getPuntos1(self):
+        return self.Puntos1
+
+    def setPuntos2(self, nuevo):
+        self.Puntos2 = nuevo
+    
+    def getPuntos2(self):
+        return self.Puntos2
+
+    def setPuntos3(self, nuevo):
+        self.Puntos3 = nuevo
+    
+    def getPuntos3(self):
+        return self.Puntos3
+
+    def setnameTurno(self, nuevo):
+        self.nameTurno = nuevo
+    
+    def getnameTurno(self):
+        return self.nameTurno
+
 
     def setjugadores(self, nuevo):
         self.jugadores = nuevo
     
     def getjugadores(self):
         return self.jugadores
+    
+    def setorden(self, nuevo):
+        self.orden = nuevo
+    
+    def getorden(self):
+        return self.orden
 
     def setmisCartas(self, nuevo):
         self.misCartas = nuevo
@@ -163,8 +224,10 @@ class Entrar(Screen):
                     info = a.split()
                     users = info[0].split(',')
                     cartas = info[1].split(',')
+                    # orden de los usuarios
+                    varg.setorden(users)
                     #turno
-                    varg.setturno(users[0])
+                    varg.setprimerTurno(users[0])
                     # nombres de los demás jugadores
                     jugadores = []
                     for a in users:
@@ -255,8 +318,10 @@ class Crear(Screen):
                     info = a.split()
                     users = info[0].split(',')
                     cartas = info[1].split(',')
+                    # orden de los usuarios
+                    varg.setorden(users)
                     #turno
-                    varg.setturno(users[0])
+                    varg.setprimerTurno(users[0])
                     # nombres de los demás jugadores
                     jugadores = []
                     for a in users:
@@ -269,15 +334,19 @@ class Crear(Screen):
                     if (index == 0):
                         miscartas = cartas[0:14]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p1")
                     elif (index == 1):
                         miscartas = cartas[14:27]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p2")
                     elif (index == 2):
                         miscartas = cartas[27:40]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p3")
                     elif (index == 3):
                         miscartas = cartas[40:53]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p4")
                     esperando = False
                     self.manager.current = "Juego"
                 
@@ -311,13 +380,6 @@ class Juego(Screen):
         self.orientation = "vertical"
         S = Image(source='imagenes/juego.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
-       
-
-        # Variables
-        Punto = "0"
-        Punto1 = "0"
-        Punto2 = "0"
-        Punto3 = "0"
         self.option = ""
         self.botones = []
 
@@ -325,19 +387,16 @@ class Juego(Screen):
         labelTitle = Label(text='[color=000000] CENTINELA [/color]', markup = True, font_size = "70dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 450))
         labelChat = Label(text='[color=000000] CHAT [/color]', markup = True, font_size = "50dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(500, 450))
         
-        
         SP1 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(30, 370) )
         SP2 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(150, 370) )
         SP3 = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(270, 370) )
-        labelPunto1 = Label(text='[color=000000] '+Punto1+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(55, 350))
-        labelPunto2 = Label(text='[color=000000] '+Punto2+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(175, 350))
-        labelPunto3 = Label(text='[color=000000] '+Punto3+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(295, 350))
-        
-        
-        #Acción de atacar
+        labelPunto1 = Label(text='[color=000000] '+varg.getPuntos1()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(55, 350))
+        labelPunto2 = Label(text='[color=000000] '+varg.getPuntos2()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(175, 350))
+        labelPunto3 = Label(text='[color=000000] '+varg.getPuntos3()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(295, 350))
+                
+        #Acción de iniciar
         self.btnIniciar = Button(text= "INICIAR", font_size=85, size_hint=(0.5, 0.5), background_color = [0, 166, 0, 38], pos=(100,30))
         self.btnIniciar.bind(on_press = self.iniciar)
-
         #Acción de atacar
         self.btnAtacar = Button(text= "Atacar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(100,10))
         self.btnAtacar.bind(on_press = self.changerA)
@@ -348,8 +407,8 @@ class Juego(Screen):
         self.btnRobar = Button(text= "Robar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(300,10))
         self.btnRobar.bind(on_press = self.changerR)
 
-        labelPunto = Label(text='[color=000000] '+Punto+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
-        puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
+        self.labelPunto = Label(text='[color=000000] '+varg.getPuntos()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
+        self.puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
 
         #Chat
         self.messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
@@ -363,15 +422,15 @@ class Juego(Screen):
         self.my_box1.add_widget(SP1)
         self.my_box1.add_widget(SP2)
         self.my_box1.add_widget(SP3)
-        puntosImg.add_widget(labelPunto)
-        puntosImg.add_widget(labelPunto1)
-        puntosImg.add_widget(labelPunto2)
-        puntosImg.add_widget(labelPunto3)
+        self.puntosImg.add_widget(self.labelPunto)
+        self.puntosImg.add_widget(labelPunto1)
+        self.puntosImg.add_widget(labelPunto2)
+        self.puntosImg.add_widget(labelPunto3)
         self.my_box1.add_widget(btn)
         self.my_box1.add_widget(self.btnAtacar)
         self.my_box1.add_widget(self.btnRobar)
         self.my_box1.add_widget(self.btnSumar)            
-        self.my_box1.add_widget(puntosImg)
+        self.my_box1.add_widget(self.puntosImg)
         self.my_box1.add_widget(self.btnIniciar)  
         self.add_widget(self.my_box1)
 
@@ -380,6 +439,24 @@ class Juego(Screen):
         
 
     def jugada(self, btn):
+        print("boton", btn.text)
+        if(self.option == "S"):
+            print(varg.getnameTurno())
+            requestS = "S "+btn.text+" "+varg.getnameTurno()
+            s.sendall(requestS.encode())
+            data = s.recv(1024).decode()
+            print(requestS)
+            print("respuesta de suma: ", data)
+            varg.setPuntos(data)
+            # TODO: ACTUALIZAR LABEL DE PUNTOS
+            self.puntosImg.remove_widget(self.labelPunto)
+            self.labelPunto = Label(text='[color=000000] '+varg.getPuntos()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
+
+        elif(self.option == "A"):
+            requestS = "A"
+        elif(self.option == "R"):
+            requestS = "R"
+
         for a in self.botones:
             self.my_box1.remove_widget(a) 
         self.my_box1.add_widget(self.btnAtacar)
@@ -405,12 +482,11 @@ class Juego(Screen):
             else:
                 x = x + 50 
          
-
     def iniciar(self, btn):
         self.my_box1.remove_widget(self.btnIniciar) 
         jugadores = varg.getjugadores()
         labelPin = Label(text='[color=165B03] Estas en la sala: '+varg.getnum()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
-        labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getturno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getprimerTurno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
         labelP1 = Label(text='[color=165B03] '+jugadores[0]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
         labelP2 = Label(text='[color=165B03] '+jugadores[1]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
         labelP3 = Label(text='[color=165B03] '+jugadores[2]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
