@@ -1,3 +1,4 @@
+import time
 import socket
 import kivy
 kivy.require('1.9.0')
@@ -17,6 +18,7 @@ import kivy.resources
 from kivy.graphics import Color, Rectangle ,Line
 from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
+
 
 Config.set('graphics', 'resizable', 'False')
 
@@ -104,27 +106,47 @@ class Entrar(Screen):
         S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
 
-        my_box1 = FloatLayout(size=(300, 300))
+        self.my_box1 = FloatLayout(size=(300, 300))
         # label del PIN
-        my_label = Label(text='[color=ffffff]  Escriba el PIN: [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 250))
+        self.my_label = Label(text='[color=ffffff]  Escriba el PIN: [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 250))
         #input del PIN
         self.pin_input = TextInput(size_hint=(0.3, 0.1), pos=(130, 230))
         #Boton para ingresar al juego
-        btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
-        btn.bind(on_press = self.validar)
-        my_box1.add_widget(my_label)
-        my_box1.add_widget(self.pin_input)
-        my_box1.add_widget(btn)
-        self.add_widget(my_box1)
+        self.btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
+        self.btn.bind(on_press = self.validar)
+        self.my_box1.add_widget(self.my_label)
+        self.my_box1.add_widget(self.pin_input)
+        self.my_box1.add_widget(self.btn)
+        self.add_widget(self.my_box1)
 
-    def validar(self, btn):
-        # TO DO: obtener los pines del server
-        pass
+    def validar(self,btn):
+        num = self.pin_input.text
+        join = "join "+num
+        s.sendall(join.encode())
+        message = s.recv(1024).decode()
+        print(message)
+        if(message == "joined room successfully"):
+            self.my_box1.remove_widget(self.btn)
+            self.my_box1.remove_widget(self.my_label)
+            self.my_box1.remove_widget(self.pin_input)
+            my_label2 = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
+            self.my_box1.add_widget(my_label2)
+            esperando = True
+            while (esperando == True):
+                s.sendall(b'sala')
+                a = s.recv(1024).decode()
+                if (a != "no"):
+                    print(a)
+                    esperando = False
+                
+        else:
+            self.changerNoEntrar()
 
     def changerJuego(self, btn): #Cambiar de pantalla 
+        #varg.setnum(num)
         self.manager.current = "Juego"
 
-    def changerNoEntrar(self, btn): #Cambiar de pantalla 
+    def changerNoEntrar(self): #Cambiar de pantalla 
         self.manager.current = "NoEntrar"
 
 class Espera(Screen):
@@ -173,6 +195,14 @@ class Crear(Screen):
             self.my_box1.remove_widget(self.btnPin)
             my_label = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
             self.my_box1.add_widget(my_label)
+            
+            esperando = True
+            while (esperando == True):
+                s.sendall(b'sala')
+                a = s.recv(1024).decode()
+                if (a != "no"):
+                    print(a)
+                    esperando = False
 
         #   TODO: Preguntar al server cuando ya se pueda entrar
         # nombres de los jugadores
