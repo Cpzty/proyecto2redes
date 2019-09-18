@@ -20,10 +20,6 @@ rooms = {"room1":
          "count" : 0},
          }
 
-puntaje_p1 = 0
-puntaje_p2 = 0
-puntaje_p3 = 0
-puntaje_p4 = 0
 adresses = []
 
 players = ["p1", "p2", "p3", "p4"]
@@ -37,7 +33,11 @@ p3_cards = []
 p4_cards = []
 
 def threaded_server(con, addr):
-    global p1_cards, p2_cards, p3_cards, p4_cards
+    puntaje_p1 = 0
+    puntaje_p2 = 0
+    puntaje_p3 = 0
+    puntaje_p4 = 0
+    #global p1_cards, p2_cards, p3_cards, p4_cards
     while True:
         data = con.recv(1024)
         if not data:
@@ -181,7 +181,7 @@ def threaded_read(con):
     #con.send(msg)
 def Main():
     #global p1_cards, p2_cards, p3_cards, p4_cards
-    p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
+    repartir_cartas()
     HOST = '127.0.0.1'
     PORT = 65432
 
@@ -219,7 +219,6 @@ def repartir_cartas():
         p3_cards.append(baraja.pop(randint(0, len(baraja) - 1)))
         p4_cards.append(baraja.pop(randint(0, len(baraja) - 1)))
 
-    return p1_cards, p2_cards, p3_cards, p4_cards
 
 def obtener_nombres_jugadores():
     names = []
