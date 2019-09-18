@@ -443,6 +443,7 @@ class Juego(Screen):
         if(self.option == "S"):
             print(varg.getnameTurno())
             requestS = "S "+btn.text+" "+varg.getnameTurno()
+            print(requestS)
             s.sendall(requestS.encode())
             data = s.recv(1024).decode()
             print(requestS)
