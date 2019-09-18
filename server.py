@@ -173,8 +173,11 @@ def threaded_read(con):
 #def threaded_write(con,msg):
     #con.send(msg)
 def Main():
+    global p1_cards, p2_cards, p3_cards, p4_cards
+    p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
     HOST = '127.0.0.1'
     PORT = 65432
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     print("socket binded to port", PORT)
@@ -225,7 +228,7 @@ def obtener_nombres_jugadores():
 
 def ready_to_play(con,addr):
     print("ready to play")
-    p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
+    #p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
     if(addr == rooms["room1"]["p1"]):
         separator = ","
         send_cards_p1 = separator.join(p1_cards)
