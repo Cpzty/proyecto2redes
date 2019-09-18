@@ -436,7 +436,14 @@ class Juego(Screen):
 
     def sendMessage(self, btn):
         pass
-        
+    
+    def escucharTurno(self):
+        s.sendall(b'turno')
+        data = s.recv(1024).decode()
+        while(data != varg.getnameTurno()):
+            time.sleep(1)
+            
+
 
     def jugada(self, btn):
         print("boton", btn.text)
