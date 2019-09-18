@@ -150,7 +150,6 @@ def threaded_read(con):
 
 #def threaded_write(con,msg):
     #con.send(msg)
-0
 def Main():
     HOST = '127.0.0.1'
     PORT = 65432
@@ -193,24 +192,45 @@ def repartir_cartas():
 
     return p1_cards, p2_cards, p3_cards, p4_cards
 
+def obtener_nombres_jugadores():
+    names = []
+    for direccion in clients:
+        names.append(direccion)
+    return names
+
+
+
+
 def ready_to_play(con,addr):
     p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
     if(addr == rooms["room1"]["p1"]):
         separator = ","
         send_cards_p1 = separator.join(p1_cards)
-        con.send(send_cards_p1.encode())
+        names = obtener_nombres_jugadores()
+        names_instr = ",".join(names)
+        final_msg = names_instr + " " + send_cards_p1
+        con.send(final_msg.encode())
     elif(addr == rooms["room1"]["p2"]):
         separator = ","
         send_cards_p2 = separator.join(p2_cards)
-        con.send(send_cards_p2.encode())
+        names = obtener_nombres_jugadores()
+        names_instr = ",".join(names)
+        final_msg = names_instr + " " + send_cards_p2
+        con.send(final_msg.encode())
     elif (addr == rooms["room1"]["p3"]):
         separator = ","
         send_cards_p3 = separator.join(p3_cards)
-        con.send(send_cards_p3.encode())
+        names = obtener_nombres_jugadores()
+        names_instr = ",".join(names)
+        final_msg = names_instr + " " + send_cards_p3
+        con.send(final_msg.encode())
     elif (addr == rooms["room1"]["p4"]):
         separator = ","
         send_cards_p4 = separator.join(p4_cards)
-        con.send(send_cards_p4.encode())
+        names = obtener_nombres_jugadores()
+        names_instr = ",".join(names)
+        final_msg = names_instr + " " + send_cards_p4
+        con.send(final_msg.encode())
 
 
 if __name__ == '__main__':
