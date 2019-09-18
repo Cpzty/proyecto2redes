@@ -202,6 +202,7 @@ def obtener_nombres_jugadores():
 
 
 def ready_to_play(con,addr):
+    print("ready to play")
     p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
     if(addr == rooms["room1"]["p1"]):
         separator = ","
@@ -231,6 +232,14 @@ def ready_to_play(con,addr):
         names_instr = ",".join(names)
         final_msg = names_instr + " " + send_cards_p4
         con.send(final_msg.encode())
+    else:
+        print("los anteriores no funcian")
+        all_cards = p1_cards + p2_cards + p3_cards + p4_cards
+        all_cards = ",".join(all_cards)
+        names = obtener_nombres_jugadores()
+        names_instr = ",".join(names)
+        final_msg = names_instr + " " + all_cards
+        con.sendall(final_msg)
 
 
 if __name__ == '__main__':
