@@ -120,19 +120,20 @@ class Entrar(Screen):
         self.add_widget(self.my_box1)
 
     def validar(self,btn):
+        self.my_box1.remove_widget(self.btn)
+        self.my_box1.remove_widget(self.my_label)
+        self.my_box1.remove_widget(self.pin_input)
+        my_label2 = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
+        self.my_box1.add_widget(my_label2)
         num = self.pin_input.text
         join = "join "+num
         s.sendall(join.encode())
         message = s.recv(1024).decode()
         print(message)
         if(message == "joined room successfully"):
-            self.my_box1.remove_widget(self.btn)
-            self.my_box1.remove_widget(self.my_label)
-            self.my_box1.remove_widget(self.pin_input)
-            my_label2 = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
-            self.my_box1.add_widget(my_label2)
             esperando = True
             while (esperando == True):
+                time.sleep(10)
                 s.sendall(b'sala')
                 a = s.recv(1024).decode()
                 if (a != "no"):
@@ -182,28 +183,29 @@ class Crear(Screen):
         num = s.recv(1024).decode() # reemplazar por el numero de sala
         varg.setnum(num)
         my_label = Label(text='[color=ffffff]  El PIN es: [/color]'+varg.getnum(), markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 150))
-        self.my_box1.add_widget(my_label)
+        self.my_box1.add_widget(my_label)       
 
     def changerJuego(self, btn): #Cambiar de pantalla
+        self.my_box1.remove_widget(self.btn)
+        self.my_box1.remove_widget(self.btnPin)
+        my_label = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
+        self.my_box1.add_widget(my_label)
         join = "join "+ varg.getnum()
         s.sendall(join.encode())
         print(varg.getnum())
         message = s.recv(1024).decode()
         print(message)
         if(message == "joined room successfully"):
-            self.my_box1.remove_widget(self.btn)
-            self.my_box1.remove_widget(self.btnPin)
-            my_label = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
-            self.my_box1.add_widget(my_label)
-            
             esperando = True
             while (esperando == True):
+                time.sleep(25)
                 s.sendall(b'sala')
                 a = s.recv(1024).decode()
                 if (a != "no"):
                     print(a)
                     esperando = False
-
+            
+            
         #   TODO: Preguntar al server cuando ya se pueda entrar
         # nombres de los jugadores
         # cartas del jugador
