@@ -11,6 +11,7 @@ def menu():
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
+    #s.setblocking(0)
     while True:
         menu()
         opcion = input(">: ")

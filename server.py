@@ -77,7 +77,7 @@ def threaded_read(con):
 
 #def threaded_write(con,msg):
     #con.send(msg)
-
+0
 def Main():
     HOST = '127.0.0.1'
     PORT = 65432
@@ -88,20 +88,20 @@ def Main():
     while True:
         # establish connection with client
         con, addr = s.accept()
-
+        #s.setblocking(0)
         # lock acquired by client
-        some_lock.acquire()
+        #some_lock.acquire()
         print('Connected to :', addr[0], ':', addr[1])
         if addr[1] not in adresses:
             adresses.append(addr[1])
             clients[addr[1]] = ''
 
         # Start a new thread and return its identifier
-        t1 = threading.Thread(target=threaded_server(con, addr))
-        t2 = threading.Thread(target= threaded_read(con))
-
-        t1.start()
+        #t1 = threading.Thread(target=threaded_server(con, addr))
+        #t2 = threading.Thread(target= threaded_read(con))
+        #t1.start()
         #t2.start()
+        start_new_thread(threaded_server, (con, addr))
     #s.close()
 
 
