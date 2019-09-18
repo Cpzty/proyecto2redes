@@ -10,7 +10,14 @@ rooms = {"room1":
          "p2" : '',
          "p3" : '',
          "p4" : '',
-         "count" : 0}
+         "count" : 0},
+         "room2":
+            {"pin": 0,
+         "p1" : '',
+         "p2" : '',
+         "p3" : '',
+         "p4" : '',
+         "count" : 0},
          }
 
 puntaje_p1 = 0
@@ -40,9 +47,14 @@ def threaded_server(con, addr):
 
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
-            if pin not in rooms["room1"]:
+            if pin != rooms["room1"]["pin"]:
                 con.send(pin.encode())
                 rooms["room1"]["pin"] = pin
+
+            elif(pin != rooms["room2"]["pin"]):
+                con.send(pin.encode())
+                rooms["room2"]["pin"] = pin
+
             else:
                 con.send(b'error creating pin')
         elif ("A" in data.decode()):
