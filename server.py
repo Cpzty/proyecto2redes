@@ -10,7 +10,14 @@ rooms = {"room1":
          "p2" : '',
          "p3" : '',
          "p4" : '',
-         "count" : 0}
+         "count" : 0},
+         "room2":
+            {"pin": 0,
+         "p1" : '',
+         "p2" : '',
+         "p3" : '',
+         "p4" : '',
+         "count" : 0},
          }
 
 puntaje_p1 = 0
@@ -20,6 +27,7 @@ puntaje_p4 = 0
 adresses = []
 
 players = ["p1", "p2", "p3", "p4"]
+players2 = ["p1", "p2", "p3", "p4"]
 
 clients = {}
 
@@ -40,9 +48,14 @@ def threaded_server(con, addr):
 
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
-            if pin not in rooms["room1"]:
+            if rooms["room1"]["pin"] == 0:
                 con.send(pin.encode())
                 rooms["room1"]["pin"] = pin
+
+            elif(rooms["room2"]["pin"] == 0):
+                con.send(pin.encode())
+                rooms["room2"]["pin"] = pin
+
             else:
                 con.send(b'error creating pin')
         elif ("A" in data.decode()):
@@ -132,11 +145,16 @@ def threaded_server(con, addr):
         elif("join" in data.decode()):
             join_room = data.decode().split()
             the_room = join_room[1]
-            if(rooms["room1"]["count"] < 4):
+            if(rooms["room1"]["count"] < 4 and the_room == rooms["room1"]["pin"]):
                 rooms["room1"][players.pop(randint(0, len(players)-1))] = addr[1]
                 con.send(b'joined room successfully')
                 rooms["room1"]["count"] = rooms["room1"]["count"] + 1
-                print(rooms)
+                print(rooms["room1"])
+            elif(rooms["room2"]["count"] < 4 and the_room == rooms["room2"]["pin"]):
+                rooms["room2"][players2.pop(randint(0, len(players2)-1))] = addr[1]
+                con.send(b'joined room2 successfully')
+                rooms["room2"]["count"] = rooms["room2"]["count"] + 1
+                print(rooms["room2"])
             else:
                 con.send(b'room is full')
         elif("nombre" in data.decode()):
