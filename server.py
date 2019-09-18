@@ -31,7 +31,13 @@ players2 = ["p1", "p2", "p3", "p4"]
 
 clients = {}
 
+p1_cards = []
+p2_cards = []
+p3_cards = []
+p4_cards = []
+
 def threaded_server(con, addr):
+    #global p1_cards, p2_cards, p3_cards, p4_cards
     while True:
         data = con.recv(1024)
         if not data:
@@ -199,12 +205,9 @@ def Main():
 
 
 def repartir_cartas():
+    #global p1_cards, p2_cards, p3_cards, p4_cards
     palo = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
     baraja = palo + palo + palo + palo
-    p1_cards = []
-    p2_cards = []
-    p3_cards = []
-    p4_cards = []
     for i in range(13):
         p1_cards.append(baraja.pop(randint(0, len(baraja) - 1)))
         p2_cards.append(baraja.pop(randint(0, len(baraja) - 1)))
