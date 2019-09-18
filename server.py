@@ -94,22 +94,22 @@ def threaded_server(con, addr):
                 print("add to p1")
                 puntaje_p1 = puntaje_p1 + int(sumar_stringer[1])
                 con.send(str(puntaje_p1).encode())
-                con.sendall("p2".encode())
+                #con.sendall("p2".encode())
             elif (jugador_sumar == "p2"):
                 print("add to p2")
                 puntaje_p2 = puntaje_p2 + int(sumar_stringer[1])
                 con.send(str(puntaje_p2).encode())
-                con.sendall("p3".encode())
+                #con.sendall("p3".encode())
             elif (jugador_sumar == "p3"):
                 print("add to p3")
                 puntaje_p3 = puntaje_p3 + int(sumar_stringer[1])
                 con.send(str(puntaje_p3).encode())
-                con.sendall("p4".encode())
+                #con.sendall("p4".encode())
             elif (jugador_sumar == "p4"):
                 print("add to p4")
                 puntaje_p4 = puntaje_p4 + int(sumar_stringer[1])
                 con.send(str(puntaje_p4).encode())
-                con.sendall("p1".encode())
+                #con.sendall("p1".encode())
 
             #puntaje_p1 = puntaje_p1 + int(data.decode())
         elif ("R" in data.decode()):
