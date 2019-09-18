@@ -30,6 +30,11 @@ def threaded_server(con, addr):
             break
         # conn.sendall(data)
         # elif("create" in data.decode()):
+
+        #juego
+        if(rooms["room1"]["count"] == 4):
+            ready_to_play(con, addr)
+
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
             if pin not in rooms["room1"]:
@@ -41,16 +46,81 @@ def threaded_server(con, addr):
             ataque = data.decode().split()
             carta = ataque[1]
             atacado = ataque[2]
+            quien_ataca = ataque[3]
             # restarle puntaje al otro jugador
+            if(addr == rooms["room1"][atacado]):
+                carta_atacado = "A " + carta
+                con.send(carta_atacado.encode())
+                if(quien_ataca == "p1"):
+                    if(addr == rooms["room1"]["p2"]):
+                        con.send("play")
+                elif(quien_ataca == "p2"):
+                    if (addr == rooms["room1"]["p3"]):
+                        con.send("play")
+                elif (quien_ataca == "p3"):
+                    if (addr == rooms["room1"]["p4"]):
+                        con.send("play")
+                elif (quien_ataca == "p4"):
+                    if (addr == rooms["room1"]["p1"]):
+                        con.send("play")
             # conn.send()
         elif ("S" in data.decode()):
-            # averiguar que jugador lo envia para sumarse puntaje
+            sumar_stringer = data.decode().split()
+            jugador_sumar = sumar_stringer[2]
+            if(rooms["room1"][jugador_sumar] == "p1"):
+                puntaje_p1 = puntaje_p1 + sumar_stringer[1]
+                con.send(str(puntaje_p1).encode())
+                if(addr == rooms["room1"]["p2"]):
+                    con.send("play")
+            elif (rooms["room1"][jugador_sumar] == "p2"):
+                puntaje_p2 = puntaje_p2 + sumar_stringer[1]
+                con.send(str(puntaje_p2).encode())
+                if (addr == rooms["room1"]["p3"]):
+                    con.send("play")
+            elif (rooms["room1"][jugador_sumar] == "p3"):
+                puntaje_p3 = puntaje_p3 + sumar_stringer[1]
+                con.send(str(puntaje_p3).encode())
+                if (addr == rooms["room1"]["p4"]):
+                    con.send("play")
+            elif (rooms["room1"][jugador_sumar] == "p4"):
+                puntaje_p4 = puntaje_p4 + sumar_stringer[1]
+                con.send(str(puntaje_p4).encode())
+                if (addr == rooms["room1"]["p1"]):
+                    con.send("play")
+
             puntaje_p1 = puntaje_p1 + int(data.decode())
         elif ("R" in data.decode()):
             robo = data.decode().split()
-            carta = robo[1]
+            usuario_que_roba = robo[1]
             robado = robo[2]
+            carta_robada = robo[3]
             # enviar al jugador correspondiente determinar exito o fracaso y reenviar al jugador inicial
+            if(addr == rooms["room1"][robado]):
+                a_robar = usuario_que_roba + " " + carta_robada
+                con.send(a_robar.encode())
+        elif ("exito" in data.decode()):
+            exito = data.decode.split()
+            player_exito = exito[0]
+            if(addr == rooms["room1"][player_exito]):
+                con.send("play")
+                if (rooms["room1"][player_exito] == "p1"):
+                    if (addr == rooms["room1"]["p2"]):
+                        con.send("play")
+                elif (rooms["room1"][player_exito] == "p2"):
+                    if (addr == rooms["room1"]["p3"]):
+                        con.send("play")
+                elif (rooms["room1"][player_exito] == "p3"):
+                    if (addr == rooms["room1"]["p4"]):
+                        con.send("play")
+                elif (rooms["room1"][player_exito] == "p4"):
+                    if (addr == rooms["room1"]["p1"]):
+                        con.send("play")
+
+        elif("fallo" in data.decode()):
+            fallo = data.decode()
+            player_fallo = fallo[0]
+            if (addr == rooms["room1"][player_fallo]):
+                con.send("discard")
         elif(data.decode() == "lista"):
             for i in range(len(adresses)):
                 adress = adresses[i]
@@ -69,6 +139,7 @@ def threaded_server(con, addr):
         elif("nombre" in data.decode()):
             nickname = data.decode().split()
             clients[addr[1]] = nickname[1]
+
 
 
 def threaded_read(con):
@@ -120,8 +191,25 @@ def repartir_cartas():
 
     return p1_cards, p2_cards, p3_cards, p4_cards
 
-def ready_to_play():
-    print("in progress")
+def ready_to_play(con,addr):
+    p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
+    if(addr == rooms["room1"]["p1"]):
+        separator = ","
+        send_cards_p1 = separator.join(p1_cards)
+        con.send(send_cards_p1.encode())
+    elif(addr == rooms["room1"]["p2"]):
+        separator = ","
+        send_cards_p2 = separator.join(p2_cards)
+        con.send(send_cards_p2.encode())
+    elif (addr == rooms["room1"]["p3"]):
+        separator = ","
+        send_cards_p3 = separator.join(p3_cards)
+        con.send(send_cards_p3.encode())
+    elif (addr == rooms["room1"]["p4"]):
+        separator = ","
+        send_cards_p4 = separator.join(p4_cards)
+        con.send(send_cards_p4.encode())
+
 
 if __name__ == '__main__':
     Main()
