@@ -1,5 +1,7 @@
 import time
 import socket
+from _thread import *
+import threading
 import kivy
 kivy.require('1.9.0')
 from kivy.app import App
@@ -137,9 +139,9 @@ class Name(Screen):
         #Boton para ingresar al programa
         btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
         btn.bind(on_press = self.changer)
-        btnHelp = Button(font_size=24, size_hint=(0.09, 0.1), pos=(600,500))
+        btnHelp = Button(font_size=24, size_hint=(0.09, 0.06), pos=(600,500))
         btnHelp.bind(on_press = self.changerHelp)
-        btnHelp.add_widget(Image(source='imagenes/help.jpg', pos=(600,500), allow_stretch=True))
+        btnHelp.add_widget(Image(source='imagenes/help.jpg', pos=(580,500), allow_stretch=True))
         my_box1.add_widget(my_label1)
         my_box1.add_widget(my_label2)
         my_box1.add_widget(self.my_input)
@@ -155,7 +157,29 @@ class Name(Screen):
         s.sendall(name.encode())
 
     def changerHelp(self, btn): #Cambiar de pantalla 
-        self.manager.current = "Salas"
+        self.manager.current = "Help"
+
+
+class Help(Screen):
+    def __init__(self,**Kwargs):
+        super(Help, self).__init__(**Kwargs)
+        self.orientation = "vertical"
+        S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
+        self.add_widget(S) #añade la imagen al widget
+        my_box = FloatLayout(size=(300, 300))
+        #titulo 
+        my_label1 = Label(text='[color=ffffff][b] Centinela [/b][/color]', markup = True, font_size = "70dp", font_name= "Times",size_hint=(0.3, 0.3), pos=(150, 420))
+        my_label = Label(text='[color=ffffff]  Se inicia con 13 cartas \n Hay 3 acciones: \n\tSumar: Se le agrega al puntaje el valor de la carta \n\tAtacar: Se elige un oponente al cual se le restara el\nvalor de la carta seleccionada \n\tRobar:Adivinar la carta de otro jugador y tener un turno extra.\n Si adivina el jugador debe descartar la carta \n y perder el turno \n Gana quien sume más puntos [/color]'+varg.num, markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(200, 200))
+        my_box.add_widget(my_label)
+        btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
+        btn.bind(on_press = self.changer)
+        my_box.add_widget(btn)
+        my_box.add_widget(my_label1)
+        self.add_widget(my_box)
+
+    def changer(self, btn): #Cambiar de pantalla 
+        self.manager.current = "Name"
+
 
 class Salas(Screen):
     def __init__(self,**Kwargs):
@@ -353,7 +377,6 @@ class Crear(Screen):
                     print(varg.getnameTurno())
                     self.manager.current = "Juego"
                 
-
 #Esta pantalla se muestra si:
 #    -El PIN de la sala no existe
 #    -La sala esta llena
@@ -438,7 +461,11 @@ class Juego(Screen):
         self.add_widget(self.my_box1)
 
     def sendMessage(self, btn):
-        pass
+        requestmsg = varg.getplayer_name()+" chat "+self.messageInput.text
+        print(requestmsg)
+        self.my_box1.remove_widget(self.messageInput)
+        self.my_box1.add_widget(self.messageInput)
+        s.sendall(requestmsg.encode())
     
     def escucharTurno(self):
         while(varg.getturno() != varg.getplayer_name()):
@@ -504,7 +531,14 @@ class Juego(Screen):
                 x = 30
             else:
                 x = x + 50 
-         
+    
+    def threaded_msg(self):
+        while True:
+            time.sleep(1)
+            data = s.recv(1024).decode()
+            print(data)
+
+
     def iniciar(self, btn):
         self.my_box1.remove_widget(self.btnIniciar) 
         jugadores = varg.getjugadores()
@@ -519,6 +553,10 @@ class Juego(Screen):
         self.my_box1.add_widget(labelP1)
         self.my_box1.add_widget(labelP2)
         self.my_box1.add_widget(labelP3)
+
+        start_new_thread(self.threaded_msg, ())
+
+
 
     def cartas(self):
         if (self.option == "A" or self.option == "R"):
@@ -574,7 +612,8 @@ class CentinelaApp(App):
         screen4 = Crear(name = "Crear")
         screen5 = NoEntrar(name = "NoEntrar")
         screen6 = Juego(name = "Juego")
-        screen7 = Juego(name = "Espera")
+        screen7 = Espera(name = "Espera")
+        screen8 = Help(name = "Help")
     
         my_screenmanager.add_widget(screen1)
         my_screenmanager.add_widget(screen2)
@@ -583,6 +622,7 @@ class CentinelaApp(App):
         my_screenmanager.add_widget(screen5)
         my_screenmanager.add_widget(screen6)
         my_screenmanager.add_widget(screen7)
+        my_screenmanager.add_widget(screen8)
         
         return my_screenmanager        
 
