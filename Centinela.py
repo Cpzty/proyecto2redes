@@ -69,7 +69,9 @@ class Name(Screen):
     def changer(self, btn): #Cambiar de pantalla 
         self.manager.current = "Salas"
         varg.setplayer_name(self.my_input.text)
-        print(varg.getplayer_name())
+        name = "nombre "+varg.getplayer_name()
+        print(name)
+        s.sendall(name.encode())
 
     def changerHelp(self, btn): #Cambiar de pantalla 
         self.manager.current = "Salas"
@@ -142,38 +144,42 @@ class Crear(Screen):
         S = Image(source='imagenes/fondoRojo.jpeg', allow_stretch=True)
         self.add_widget(S) #añade la imagen al widget
 
-        my_box1 = FloatLayout(size=(300, 300))
+        self.my_box1 = FloatLayout(size=(300, 300))
         # label del PIN
-        btnPin = Button(text= "Generar PIN", font_size=24, size_hint=(0.3, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(250,350))
-        btnPin.bind(on_press= self.generarPin)
+        self.btnPin = Button(text= "Generar PIN", font_size=24, size_hint=(0.3, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(250,350))
+        self.btnPin.bind(on_press= self.generarPin)
         #Boton para ingresar al juego
-        btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
-        btn.bind(on_press = self.changerJuego)
-        my_box1.add_widget(btn)
-        my_box1.add_widget(btnPin)
-        self.add_widget(my_box1)
+        self.btn = Button(text= "Inicio", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(350,120))
+        self.btn.bind(on_press = self.changerJuego)
+        self.my_box1.add_widget(self.btn)
+        self.my_box1.add_widget(self.btnPin)
+        self.add_widget(self.my_box1)
 
     def generarPin(self, btn):
         s.sendall(b'PIN')
         num = s.recv(1024).decode() # reemplazar por el numero de sala
         varg.setnum(num)
-        my_box = FloatLayout(size=(300, 300))
         my_label = Label(text='[color=ffffff]  El PIN es: [/color]'+varg.getnum(), markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(100, 150))
-        my_box.add_widget(my_label)
-        self.add_widget(my_box)
+        self.my_box1.add_widget(my_label)
 
     def changerJuego(self, btn): #Cambiar de pantalla
-        """
-        join = "join "+ num 
+        join = "join "+ varg.getnum()
         s.sendall(join.encode())
-        print(num)
-        self.manager.current = "Espera"
+        print(varg.getnum())
+        message = s.recv(1024).decode()
+        print(message)
+        if(message == "joined room successfully"):
+            self.my_box1.remove_widget(self.btn)
+            self.my_box1.remove_widget(self.btnPin)
+            my_label = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
+            self.my_box1.add_widget(my_label)
+
+        #   TODO: Preguntar al server cuando ya se pueda entrar
         # nombres de los jugadores
         # cartas del jugador
-        while ( s.recv(1024).decode() == ""):
-            pass
-        """
-        self.manager.current = "Juego"
+        #while ( s.recv(1024).decode() == ""):
+         #   pass
+        #self.manager.current = "Juego"
     
     
 
