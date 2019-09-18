@@ -198,7 +198,7 @@ def repartir_cartas():
 
 def obtener_nombres_jugadores():
     names = []
-    for direccion in clients:
+    for direccion in clients.values():
         names.append(direccion)
     return names
 
