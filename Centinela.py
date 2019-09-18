@@ -26,6 +26,8 @@ class Variables():
     def __init__(self):
         self.player_name = ""
         self.num = ""
+        self.jugadores = []
+        self.misCartas = []
 
     def setplayer_name(self, nuevo):
         self.player_name = nuevo
@@ -38,6 +40,18 @@ class Variables():
     
     def getnum(self):
         return self.num
+
+    def setjugadores(self, nuevo):
+        self.jugadores = nuevo
+    
+    def getjugadores(self):
+        return self.jugadores
+
+    def setmisCartas(self, nuevo):
+        self.misCartas = nuevo
+    
+    def getmisCartas(self):
+        return self.misCartas
 
 class Contenedor(BoxLayout):
     None
@@ -133,7 +147,7 @@ class Entrar(Screen):
         if(message == "joined room successfully"):
             esperando = True
             while (esperando == True):
-                time.sleep(10)
+                time.sleep(1)
                 s.sendall(b'sala')
                 a = s.recv(1024).decode()
                 if (a != "no"):
@@ -198,22 +212,22 @@ class Crear(Screen):
         if(message == "joined room successfully"):
             esperando = True
             while (esperando == True):
-                time.sleep(25)
+                time.sleep(1)
                 s.sendall(b'sala')
                 a = s.recv(1024).decode()
                 if (a != "no"):
                     print(a)
+                    info = a.split()
+                    users = info[0].split(',')
+                    cartas = info[1].split(',')
+                    jugadores = []
+                    for a in users:
+                        if(a != varg.getplayer_name):
+                            jugadores.append(a)
+                    varg.setjugadores(jugadores) 
                     esperando = False
-            
-            
-        #   TODO: Preguntar al server cuando ya se pueda entrar
-        # nombres de los jugadores
-        # cartas del jugador
-        #while ( s.recv(1024).decode() == ""):
-         #   pass
-        #self.manager.current = "Juego"
-    
-    
+                    self.manager.current = "Juego"
+                
 
 #Esta pantalla se muestra si:
 #    -El PIN de la sala no existe
@@ -270,9 +284,6 @@ class Juego(Screen):
         labelPunto2 = Label(text='[color=000000] '+Punto2+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(175, 350))
         labelPunto3 = Label(text='[color=000000] '+Punto3+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(295, 350))
         
-        labelP1 = Label(text='[color=165B03] '+P1+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
-        labelP2 = Label(text='[color=165B03] '+P2+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
-        labelP3 = Label(text='[color=165B03] '+P3+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
         
         #Acción de atacar
         self.btnIniciar = Button(text= "INICIAR", font_size=85, size_hint=(0.5, 0.5), background_color = [0, 166, 0, 38], pos=(100,30))
@@ -292,20 +303,17 @@ class Juego(Screen):
         puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
 
         #Chat
-        messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
+        self.messageInput = TextInput(size_hint=(0.2, 0.1), pos=(550, 10))
         #Boton para enviar mensaje
         btn = Button(text= "Enviar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(720,10))
-        btn.bind(on_press = self.changer)
+        btn.bind(on_press = self.sendMessage)
         
         self.my_box1.add_widget(labelTitle)
         self.my_box1.add_widget(labelChat)
-        self.my_box1.add_widget(messageInput)
+        self.my_box1.add_widget(self.messageInput)
         self.my_box1.add_widget(SP1)
         self.my_box1.add_widget(SP2)
         self.my_box1.add_widget(SP3)
-        self.my_box1.add_widget(labelP1)
-        self.my_box1.add_widget(labelP2)
-        self.my_box1.add_widget(labelP3)
         puntosImg.add_widget(labelPunto)
         puntosImg.add_widget(labelPunto1)
         puntosImg.add_widget(labelPunto2)
@@ -318,7 +326,8 @@ class Juego(Screen):
         self.my_box1.add_widget(self.btnIniciar)  
         self.add_widget(self.my_box1)
 
-    
+    def sendMessage(self, btn):
+        pass
         
 
     def jugada(self, btn):
@@ -352,10 +361,18 @@ class Juego(Screen):
 
     def iniciar(self, btn):
         self.my_box1.remove_widget(self.btnIniciar) 
+        jugadores = varg.getjugadores()
         labelPin = Label(text='[color=165B03] Estas en la sala: '+varg.getnum()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
         labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getplayer_name()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        labelP1 = Label(text='[color=165B03] '+jugadores[0]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
+        labelP2 = Label(text='[color=165B03] '+jugadores[1]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
+        labelP3 = Label(text='[color=165B03] '+jugadores[2]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
+        
         self.my_box1.add_widget(labelPin)
         self.my_box1.add_widget(labelTurno)      
+        self.my_box1.add_widget(labelP1)
+        self.my_box1.add_widget(labelP2)
+        self.my_box1.add_widget(labelP3)
 
     def cartas(self):
         if (self.option == "AR"):
