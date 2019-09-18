@@ -243,7 +243,7 @@ def ready_to_play(con,addr):
         names = obtener_nombres_jugadores()
         names_instr = ",".join(names)
         final_msg = names_instr + " " + all_cards
-        con.sendall(final_msg)
+        con.sendall(final_msg.encode())
 
 
 if __name__ == '__main__':

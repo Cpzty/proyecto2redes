@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ee64bd68-1d78-42f1-8299-9a75e2d16639" name="Default Changelist" comment="" />
+    <list default="true" id="ee64bd68-1d78-42f1-8299-9a75e2d16639" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="430">
-              <caret line="38" column="37" lean-forward="true" selection-start-line="38" selection-start-column="37" selection-end-line="38" selection-end-column="37" />
+            <state relative-caret-position="362">
+              <caret line="245" column="38" selection-start-line="245" selection-start-column="38" selection-end-line="245" selection-end-column="38" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -38,6 +40,7 @@
       <find>connect</find>
       <find>ready_</find>
       <find>stringer</find>
+      <find>obtener_nombres_ju</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -210,8 +213,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="38" column="37" lean-forward="true" selection-start-line="38" selection-start-column="37" selection-end-line="38" selection-end-column="37" />
+        <state relative-caret-position="362">
+          <caret line="245" column="38" selection-start-line="245" selection-start-column="38" selection-end-line="245" selection-end-column="38" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
