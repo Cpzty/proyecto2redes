@@ -37,7 +37,7 @@ p3_cards = []
 p4_cards = []
 
 def threaded_server(con, addr):
-    #global p1_cards, p2_cards, p3_cards, p4_cards
+    global p1_cards, p2_cards, p3_cards, p4_cards
     while True:
         data = con.recv(1024)
         if not data:
