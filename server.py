@@ -32,8 +32,11 @@ def threaded_server(con, addr):
         # elif("create" in data.decode()):
 
         #juego
-        if(rooms["room1"]["count"] == 4):
-            ready_to_play(con, addr)
+        elif(data.decode() == "sala"):
+            if(rooms["room1"]["count"] == 4):
+                ready_to_play(con, addr)
+            else:
+                con.send("no")
 
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
@@ -142,6 +145,7 @@ def threaded_server(con, addr):
             print("El nombre es", nickname[1] )
         elif("chat" in data.decode):
             con.sendall(data)
+
 
 
 def threaded_read(con):
