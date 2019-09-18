@@ -143,7 +143,7 @@ def threaded_server(con, addr):
             nickname = data.decode().split()
             clients[addr[1]] = nickname[1]
             print("El nombre es", nickname[1] )
-        elif("chat" in data.decode):
+        elif("chat" in data.decode()):
             con.sendall(data)
 
 
