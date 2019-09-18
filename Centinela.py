@@ -57,19 +57,17 @@ class Variables():
         return self.primerTurno
 
     def setturno(self, nuevo):
-        self.turno = nuevo
+        ordjugadores = self.getorden()
+        if(nuevo == "p1"):
+            self.turno = ordjugadores[0]
+        elif(nuevo == "p2"):
+            self.turno = ordjugadores[1]
+        elif(nuevo == "p3"):
+            self.turno = ordjugadores[2]
+        elif(nuevo == "p4"):
+            self.turno = ordjugadores[3]
     
     def getturno(self):
-        ordjugadores = self.getorden()
-        if(self.getnameTurno == "p1"):
-            self.setturno(ordjugadores[1])
-        elif(self.getnameTurno == "p2"):
-            self.setturno(ordjugadores[2])
-        elif(self.getnameTurno == "p3"):
-            self.setturno(ordjugadores[3])
-        elif(self.getnameTurno == "p4"):
-            self.setturno(ordjugadores[0])
-
         return self.turno
 
     def setPuntos(self, nuevo):
@@ -101,7 +99,6 @@ class Variables():
     
     def getnameTurno(self):
         return self.nameTurno
-
 
     def setjugadores(self, nuevo):
         self.jugadores = nuevo
@@ -240,16 +237,21 @@ class Entrar(Screen):
                     if (index == 0):
                         miscartas = cartas[0:14]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p1")
                     elif (index == 1):
                         miscartas = cartas[14:27]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p2")
                     elif (index == 2):
                         miscartas = cartas[27:40]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p3")
                     elif (index == 3):
                         miscartas = cartas[40:53]
                         varg.setmisCartas(miscartas)
+                        varg.setnameTurno("p4")
                     esperando = False
+                    print(varg.getnameTurno())
                     self.manager.current = "Juego"
                 
         else:
@@ -348,6 +350,7 @@ class Crear(Screen):
                         varg.setmisCartas(miscartas)
                         varg.setnameTurno("p4")
                     esperando = False
+                    print(varg.getnameTurno())
                     self.manager.current = "Juego"
                 
 
@@ -438,11 +441,20 @@ class Juego(Screen):
         pass
     
     def escucharTurno(self):
-        s.sendall(b'turno')
-        data = s.recv(1024).decode()
-        while(data != varg.getnameTurno()):
+        while(varg.getturno() != varg.getplayer_name()):
             time.sleep(1)
-            
+            s.sendall(b'turno')
+            data = s.recv(1024).decode()
+            varg.setturno(data)
+            print(data)
+            print(varg.getturno())
+            self.my_box1.remove_widget(self.labelTurno)
+            self.labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getprimerTurno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+            self.my_box1.add_widget(self.labelTurno)
+        self.my_box1.remove_widget(self.labelTurno)
+        self.labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getprimerTurno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        self.my_box1.add_widget(self.labelTurno)
+        
 
 
     def jugada(self, btn):
@@ -454,11 +466,14 @@ class Juego(Screen):
             s.sendall(requestS.encode())
             data = s.recv(1024).decode()
             print(requestS)
-            print("respuesta de suma: ", data)
+            print("respuesta de suma:", data)
             varg.setPuntos(data)
             # TODO: ACTUALIZAR LABEL DE PUNTOS
             self.puntosImg.remove_widget(self.labelPunto)
             self.labelPunto = Label(text='[color=000000] '+varg.getPuntos()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
+            self.puntosImg.add_widget(self.labelPunto)
+            
+            #self.escucharTurno()
 
         elif(self.option == "A"):
             requestS = "A"
@@ -494,13 +509,13 @@ class Juego(Screen):
         self.my_box1.remove_widget(self.btnIniciar) 
         jugadores = varg.getjugadores()
         labelPin = Label(text='[color=165B03] Estas en la sala: '+varg.getnum()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
-        labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getprimerTurno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        self.labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getprimerTurno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
         labelP1 = Label(text='[color=165B03] '+jugadores[0]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
         labelP2 = Label(text='[color=165B03] '+jugadores[1]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
         labelP3 = Label(text='[color=165B03] '+jugadores[2]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
         
         self.my_box1.add_widget(labelPin)
-        self.my_box1.add_widget(labelTurno)      
+        self.my_box1.add_widget(self.labelTurno)      
         self.my_box1.add_widget(labelP1)
         self.my_box1.add_widget(labelP2)
         self.my_box1.add_widget(labelP3)
