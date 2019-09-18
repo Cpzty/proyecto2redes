@@ -86,25 +86,21 @@ def threaded_server(con, addr):
             if(rooms["room1"][jugador_sumar] == "p1"):
                 puntaje_p1 = puntaje_p1 + sumar_stringer[1]
                 con.send(str(puntaje_p1).encode())
-                if(addr == rooms["room1"]["p2"]):
-                    con.send("play")
+                con.sendall("p2 play".encode())
             elif (rooms["room1"][jugador_sumar] == "p2"):
                 puntaje_p2 = puntaje_p2 + sumar_stringer[1]
                 con.send(str(puntaje_p2).encode())
-                if (addr == rooms["room1"]["p3"]):
-                    con.send("play")
+                con.sendall("p3 play".encode())
             elif (rooms["room1"][jugador_sumar] == "p3"):
                 puntaje_p3 = puntaje_p3 + sumar_stringer[1]
                 con.send(str(puntaje_p3).encode())
-                if (addr == rooms["room1"]["p4"]):
-                    con.send("play")
+                con.sendall("p4 play".encode())
             elif (rooms["room1"][jugador_sumar] == "p4"):
                 puntaje_p4 = puntaje_p4 + sumar_stringer[1]
                 con.send(str(puntaje_p4).encode())
-                if (addr == rooms["room1"]["p1"]):
-                    con.send("play")
+                con.sendall("p1 play".encode())
 
-            puntaje_p1 = puntaje_p1 + int(data.decode())
+            #puntaje_p1 = puntaje_p1 + int(data.decode())
         elif ("R" in data.decode()):
             robo = data.decode().split()
             usuario_que_roba = robo[1]
@@ -173,7 +169,7 @@ def threaded_read(con):
 #def threaded_write(con,msg):
     #con.send(msg)
 def Main():
-    global p1_cards, p2_cards, p3_cards, p4_cards
+    #global p1_cards, p2_cards, p3_cards, p4_cards
     p1_cards, p2_cards, p3_cards, p4_cards = repartir_cartas()
     HOST = '127.0.0.1'
     PORT = 65432
