@@ -26,6 +26,7 @@ class Variables():
     def __init__(self):
         self.player_name = ""
         self.num = ""
+        self.turno = ""
         self.jugadores = []
         self.misCartas = []
 
@@ -40,6 +41,12 @@ class Variables():
     
     def getnum(self):
         return self.num
+
+    def setturno(self, nuevo):
+        self.turno = nuevo
+    
+    def getturno(self):
+        return self.turno
 
     def setjugadores(self, nuevo):
         self.jugadores = nuevo
@@ -140,6 +147,7 @@ class Entrar(Screen):
         my_label2 = Label(text='[color=ffffff]  Esperando... [/color]', markup = True, font_size = "40dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(150, 100))
         self.my_box1.add_widget(my_label2)
         num = self.pin_input.text
+        varg.setnum(num)
         join = "join "+num
         s.sendall(join.encode())
         message = s.recv(1024).decode()
@@ -152,7 +160,34 @@ class Entrar(Screen):
                 a = s.recv(1024).decode()
                 if (a != "no"):
                     print(a)
+                    info = a.split()
+                    users = info[0].split(',')
+                    cartas = info[1].split(',')
+                    #turno
+                    varg.setturno(users[0])
+                    # nombres de los demás jugadores
+                    jugadores = []
+                    for a in users:
+                        if(a != varg.getplayer_name()):
+                            jugadores.append(a)
+                    varg.setjugadores(jugadores) 
+                    # mis cartas
+                    print(users)
+                    index = users.index(varg.getplayer_name())
+                    if (index == 0):
+                        miscartas = cartas[0:14]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 1):
+                        miscartas = cartas[14:27]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 2):
+                        miscartas = cartas[27:40]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 3):
+                        miscartas = cartas[40:53]
+                        varg.setmisCartas(miscartas)
                     esperando = False
+                    self.manager.current = "Juego"
                 
         else:
             self.changerNoEntrar()
@@ -220,11 +255,29 @@ class Crear(Screen):
                     info = a.split()
                     users = info[0].split(',')
                     cartas = info[1].split(',')
+                    #turno
+                    varg.setturno(users[0])
+                    # nombres de los demás jugadores
                     jugadores = []
                     for a in users:
-                        if(a != varg.getplayer_name):
+                        if(a != varg.getplayer_name()):
                             jugadores.append(a)
                     varg.setjugadores(jugadores) 
+                    # mis cartas
+                    print(users)
+                    index = users.index(varg.getplayer_name())
+                    if (index == 0):
+                        miscartas = cartas[0:14]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 1):
+                        miscartas = cartas[14:27]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 2):
+                        miscartas = cartas[27:40]
+                        varg.setmisCartas(miscartas)
+                    elif (index == 3):
+                        miscartas = cartas[40:53]
+                        varg.setmisCartas(miscartas)
                     esperando = False
                     self.manager.current = "Juego"
                 
@@ -261,10 +314,6 @@ class Juego(Screen):
        
 
         # Variables
-        Turno = "Cristian"
-        P1 = "Ana"
-        P2 = "Estrella"
-        P3 = "Juan"
         Punto = "0"
         Punto1 = "0"
         Punto2 = "0"
@@ -291,13 +340,13 @@ class Juego(Screen):
 
         #Acción de atacar
         self.btnAtacar = Button(text= "Atacar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(100,10))
-        self.btnAtacar.bind(on_press = self.changerAR)
+        self.btnAtacar.bind(on_press = self.changerA)
         #Acción de sumar
         self.btnSumar = Button(text= "Sumar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(200,10))
         self.btnSumar.bind(on_press = self.changer)
         #Acción de Robar
         self.btnRobar = Button(text= "Robar", font_size=24, size_hint=(0.1, 0.1), background_color = [0, 1, 0.6, 0.8], pos=(300,10))
-        self.btnRobar.bind(on_press = self.changerAR)
+        self.btnRobar.bind(on_press = self.changerR)
 
         labelPunto = Label(text='[color=000000] '+Punto+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
         puntosImg = Image(source='imagenes/moneda.png', size_hint=(0.2, 0.1), pos=(350, 10) )
@@ -337,9 +386,7 @@ class Juego(Screen):
         self.my_box1.add_widget(self.btnRobar)
         self.my_box1.add_widget(self.btnSumar) 
 
-    def generarCartas(self):
-        #peticion de mis cartas al server
-        cartas = ["1","2","3","4","5","6","7","8","9","10","11","12","13"]
+    def generarCartas(self, cartas):
         x = 30
         y = 100
         cont = 0
@@ -363,7 +410,7 @@ class Juego(Screen):
         self.my_box1.remove_widget(self.btnIniciar) 
         jugadores = varg.getjugadores()
         labelPin = Label(text='[color=165B03] Estas en la sala: '+varg.getnum()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 400))
-        labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getplayer_name()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
+        labelTurno = Label(text='[color=165B03] Es turno de: '+varg.getturno()+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(120, 380))
         labelP1 = Label(text='[color=165B03] '+jugadores[0]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(-20, 270))
         labelP2 = Label(text='[color=165B03] '+jugadores[1]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(110, 270))
         labelP3 = Label(text='[color=165B03] '+jugadores[2]+'[/color]', markup = True, font_size = "20dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(220, 270))
@@ -375,15 +422,19 @@ class Juego(Screen):
         self.my_box1.add_widget(labelP3)
 
     def cartas(self):
-        if (self.option == "AR"):
+        if (self.option == "A" or self.option == "R"):
             self.my_box1.remove_widget(self.btnCon) 
             self.my_box1.remove_widget(self.Jugador) 
-            self.my_box1.remove_widget(self.labelJ) 
+            self.my_box1.remove_widget(self.labelJ)
+            if(self.option == "A"):
+                self.generarCartas(varg.getmisCartas())
+            elif(self.option == "R"):
+                self.generarCartas(["1","2","3","4","5","6","7","8","9","10","11","12","13"])
+        
+        elif(self.option == "S"):
+            self.generarCartas(varg.getmisCartas())
 
-        self.generarCartas()
-
-    def changerAR(self, btn): #Cambiar de pantalla 
-        self.option = "AR"
+    def changerAR(self): #Cambiar de pantalla 
         self.my_box1.remove_widget(self.btnAtacar)
         self.my_box1.remove_widget(self.btnRobar)
         self.my_box1.remove_widget(self.btnSumar) 
@@ -395,11 +446,20 @@ class Juego(Screen):
         self.btnCon.bind(on_press = self.change)
         self.my_box1.add_widget(self.btnCon) 
         self.my_box1.add_widget(self.Jugador) 
-    
+
+    def changerA(self, btn):
+        self.option = "A"
+        self.changerAR()
+
+    def changerR(self, btn):
+        self.option = "R"
+        self.changerAR()
+
     def change(self, btn):
         self.cartas()
 
     def changer(self, btn): #Cambiar de pantalla 
+        self.option = "S"
         self.my_box1.remove_widget(self.btnAtacar)
         self.my_box1.remove_widget(self.btnRobar)
         self.my_box1.remove_widget(self.btnSumar) 
