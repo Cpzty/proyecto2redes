@@ -36,7 +36,7 @@ def threaded_server(con, addr):
             if(rooms["room1"]["count"] == 4):
                 ready_to_play(con, addr)
             else:
-                con.send("no")
+                con.send("no".encode())
 
         elif (data.decode() == "PIN"):
             pin = str(randint(1, 9)) + str(randint(1, 9)) + str(randint(1, 9))
