@@ -499,14 +499,47 @@ class Juego(Screen):
             self.puntosImg.remove_widget(self.labelPunto)
             self.labelPunto = Label(text='[color=000000] '+varg.getPuntos()+'[/color]', markup = True, font_size = "30dp", font_name= "Times", size_hint=(0.3, 0.3), pos=(375, -10))
             self.puntosImg.add_widget(self.labelPunto)
+            print("antes de las cartas")
+            misCartasAct = varg.getmisCartas()
+            index = misCartasAct.index(btn.text)
+            newarray = []
+            for carta in misCartasAct:
+                if(index != misCartasAct.index(carta)):
+                    newarray.append(carta)
+            varg.setmisCartas(newarray)
+            print("mis cartas", varg.getmisCartas())
             
             #self.escucharTurno()
 
         elif(self.option == "A"):
-            requestS = "A"
+            namePlayer = self.Jugador.text
+            orden = varg.getorden()
+            indeP = orden.index(namePlayer)
+            if (indeP == 0):
+                elPlayer = "p1"
+            elif (indeP == 1):
+                elPlayer = "p2"
+            elif (indeP == 2):
+                elPlayer = "p3"
+            elif (indeP == 3):
+                elPlayer = "p4"
+
+            requestA = "S"+" -"+btn.text+" "+elPlayer
+            print(requestA)
+            s.sendall(requestA.encode())
+            
+            misCartas = varg.getmisCartas()
+            index = misCartas.index(btn.text)
+            newarray = []
+            for carta in misCartas:
+                if(index != misCartas.index(carta)):
+                    newarray.append(carta)
+            varg.setmisCartas(newarray)
+
         elif(self.option == "R"):
             requestS = "R"
 
+        print("antes del for")
         for a in self.botones:
             self.my_box1.remove_widget(a) 
         self.my_box1.add_widget(self.btnAtacar)
@@ -554,7 +587,7 @@ class Juego(Screen):
         self.my_box1.add_widget(labelP2)
         self.my_box1.add_widget(labelP3)
 
-        start_new_thread(self.threaded_msg, ())
+        #start_new_thread(self.threaded_msg, ())
 
 
 
