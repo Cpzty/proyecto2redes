@@ -61,7 +61,7 @@ Run the game
 
 ```
 $ python Centinela.py
-
+```
 
 ## Authors
 
@@ -71,6 +71,3 @@ $ python Centinela.py
 ## License
 
 No license
-
-
-```
