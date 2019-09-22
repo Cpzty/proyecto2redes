@@ -3,7 +3,7 @@
 ## About the project:
 The objective is to make a cards game.
 
-## game Rules:
+## Game Rules:
 - 4 players. 
 - 13 cards per player
 - Start with 0 points
