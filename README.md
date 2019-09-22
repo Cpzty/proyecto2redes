@@ -3,18 +3,18 @@
 ## About the project:
 The objective is to make a cards game.
 
-## Rules game:
+## game Rules:
 - 4 players. 
 - 13 cards per player
 - Start with 0 points
 
-The game do not care about card's suit. The mechanics are: 
+Card suits are not important. The mechanics are: 
 
-Add: Discart a card and add to your points the value of the card 
+Add: Discard a card and add to your points the value of the card 
 
-Attack: Choose a player and discard a card to subtract the value to the other player points.
+Attack: Choose a player and discard a card to subtract the value of the other player points.
 
-Steal: Choose a player and said a card you think the player have. If the player have the card has to discard it and lose your turn otherwise the game continues. And you get and extra turn to add or subtract
+Steal: Choose a player and name a card you think the other player has. If the player has the card he must discard it and lose his turn otherwise the game continues. And you get and extra turn to add or subtract
 
 ## Prerequisites
 Have python installed. 
